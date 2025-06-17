@@ -1,0 +1,146 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ------------------------------
+// MODELS
+// ------------------------------
+
+model Client {
+  id        Int    @id @default(autoincrement())
+  firstName String
+  lastName  String
+  street    String
+  city      String
+  state     String
+  zip       String
+  phone     String
+  email     String
+
+  // Relations
+  horses        Horse[]     @relation("ClientHorses")
+  invoices      Invoice[]   @relation("ClientInvoices")
+  distancesFrom Distance[]  @relation("ClientDistancesFrom")
+  distancesTo   Distance[]  @relation("ClientDistancesTo")
+  scanEvents    ScanEvent[] @relation("ClientScans")
+}
+
+model Horse {
+  id        Int      @id @default(autoincrement())
+  name      String
+  service   Service? @relation(fields: [serviceId], references: [id], name: "HorseService")
+  serviceId Int?
+
+  // Relation to Client
+  client   Client @relation("ClientHorses", fields: [clientId], references: [id])
+  clientId Int
+
+  // Relation to ScanEvent
+  scanEvents ScanEvent[] @relation("HorseScans")
+
+  // Relation to InvoiceItem
+  invoiceItems InvoiceItem[] @relation("HorseInvoiceItems")
+
+  createdAt DateTime @default(now())
+}
+
+model Service {
+  id    Int    @id @default(autoincrement())
+  name  String
+  price Float
+
+  // Relation to ScanEvent
+  scanEvents ScanEvent[] @relation("ScanEventService")
+
+  // Relation to Horses
+  horses Horse[] @relation("HorseService")
+
+  // Relation to InvoiceItems
+  invoiceItems InvoiceItem[] @relation("InvoiceItemService")
+}
+
+// Distance between two clients
+model Distance {
+  fromClient   Client @relation("ClientDistancesFrom", fields: [fromClientId], references: [id])
+  fromClientId Int
+  toClient     Client @relation("ClientDistancesTo", fields: [toClientId], references: [id])
+  toClientId   Int
+
+  distanceMiles Float
+  travelTimeMin Int
+
+  @@id([fromClientId, toClientId])
+}
+
+model Employee {
+  id    Int    @id @default(autoincrement())
+  name  String
+  phone String
+
+  // Relations
+  timecards  Timecard[]  @relation("EmployeeTimecards")
+  scanEvents ScanEvent[] @relation("EmployeeScans")
+}
+
+// Employee timecard entries
+model Timecard {
+  id         Int       @id @default(autoincrement())
+  employee   Employee  @relation("EmployeeTimecards", fields: [employeeId], references: [id])
+  employeeId Int
+  clockIn    DateTime  @default(now())
+  clockOut   DateTime?
+}
+
+// Generic scan events triggered by barcode
+model ScanEvent {
+  id        Int      @id @default(autoincrement())
+  code      String
+  action    String
+  timestamp DateTime @default(now())
+
+  client   Client? @relation("ClientScans", fields: [clientId], references: [id])
+  clientId Int?
+
+  horse   Horse? @relation("HorseScans", fields: [horseId], references: [id])
+  horseId Int?
+
+  invoice   Invoice? @relation("InvoiceScans", fields: [invoiceId], references: [id])
+  invoiceId Int?
+
+  employee   Employee? @relation("EmployeeScans", fields: [employeeId], references: [id])
+  employeeId Int?
+
+  service   Service? @relation("ScanEventService", fields: [serviceId], references: [id])
+  serviceId Int?
+}
+
+model Invoice {
+  id       Int      @id @default(autoincrement())
+  client   Client   @relation("ClientInvoices", fields: [clientId], references: [id])
+  clientId Int
+  date     DateTime @default(now())
+
+  // Relations
+  items      InvoiceItem[] @relation("InvoiceItems")
+  scanEvents ScanEvent[]   @relation("InvoiceScans")
+}
+
+model InvoiceItem {
+  id        Int     @id @default(autoincrement())
+  invoice   Invoice @relation("InvoiceItems", fields: [invoiceId], references: [id])
+  invoiceId Int
+
+  service   Service @relation("InvoiceItemService", fields: [serviceId], references: [id])
+  serviceId Int
+
+  horse   Horse? @relation("HorseInvoiceItems", fields: [horseId], references: [id])
+  horseId Int?
+
+  quantity  Int   @default(1)
+  unitPrice Float
+}
