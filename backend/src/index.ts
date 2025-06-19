@@ -5,6 +5,9 @@ import cors from "cors";
 import { PrismaClient } from "@prisma/client";
 import clientRouter from "./routes/client";
 import horseRouter from "./routes/horse";
+import invoiceRouter from "./routes/invoice";
+import scanRouter  from "./routes/scan";
+import timecardRouter from "./routes/timecard";
 import path from "path";
 
 dotenv.config();
@@ -30,6 +33,9 @@ app.get("/health", (_req: Request, res: Response) => {
 // API routes
 app.use("/clients", clientRouter(prisma));
 app.use("/horses", horseRouter(prisma));
+app.use("/invoices", invoiceRouter(prisma));
+app.use("/scans", scanRouter(prisma));
+app.use("/timecards", timecardRouter(prisma));
 
 // Static frontend
 app.use(express.static(path.resolve(__dirname, "../frontend/dist")));
