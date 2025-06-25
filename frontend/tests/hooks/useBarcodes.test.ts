@@ -1,4 +1,3 @@
-// File: frontend/tests/hooks/useBarcodes.test.ts
 import { describe, it, expect, beforeEach } from 'vitest';
 import { renderHook, act, waitFor } from '@testing-library/react';
 import { useBarcodes } from '../../src/hooks/useBarcodes';

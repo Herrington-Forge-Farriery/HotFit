@@ -94,16 +94,69 @@ npm install             # Install dependencies
 ## 📂 Folder Structure
 
 ```
-HotFit/
-├── frontend/         # React + Vite app
-├── backend/          # Express + Prisma API
-│   ├── prisma/       # Prisma schema + migrations
-│   ├── src/          # Server code & routers
-│   ├── .env          # Backend environment variables
+HotFit/                               ← Repo root
+├── package.json                     ← npm workspaces config
+├── package-lock.json
+├── common/                          ← Shared code (types, API, hooks)
 │   ├── package.json
-│   └── tsconfig.json
-├── README.md         # This setup guide
-└── .gitignore
+│   └── src/
+│       ├── api.ts
+│       ├── types.ts
+│       └── hooks/
+│           ├── useOfflineScans.web.ts
+│           ├── useOfflineScans.native.ts
+│           └── useOfflineScans.ts     ← entry-point switching on Platform.OS
+├── frontend/                        ← React + Vite web app
+│   ├── package.json
+│   ├── vite.config.ts
+│   ├── tsconfig.json
+│   ├── src/
+│   │   ├── db.ts                     ← Dexie + fake-indexeddb polyfill
+│   │   ├── hooks/
+│   │   │   ├── useOfflineScans.ts
+│   │   │   └── useBarcodes.ts
+│   │   └── components/
+│   │       ├── scanner.tsx
+│   │       └── barcodelist.tsx
+│   └── tests/
+│       ├── components/
+│       │   ├── scanner.test.tsx
+│       │   └── barcodelist.test.tsx
+│       └── hooks/
+│           └── useBarcodes.test.ts
+├── backend/                         ← Express + Prisma API
+│   ├── package.json
+│   ├── tsconfig.json
+│   ├── prisma/
+│   │   ├── schema.prisma
+│   │   └── migrations/
+│   ├── src/
+│   │   ├── index.ts                  ← exports `app` & `prisma`
+│   │   └── routes/
+│   │       ├── client.ts
+│   │       ├── horse.ts
+│   │       ├── invoice.ts
+│   │       ├── scan.ts
+│   │       └── timecard.ts
+│   └── tests/
+│       ├── client.test.ts
+│       ├── horse.test.ts
+│       ├── invoice.test.ts
+│       ├── scan.test.ts
+│       └── timecard.test.ts
+└── mobile/                          ← React Native CLI app (TypeScript)
+    ├── package.json
+    ├── ios/ & android/              ← native platform folders
+    ├── src/
+    │   ├── App.tsx
+    │   ├── hooks/
+    │   │   └── useOfflineScans.native.ts
+    │   └── components/
+    │       └── Scanner.tsx           ← Vision Camera integration
+    └── __tests__/
+        └── scanner.test.tsx         ← RN Testing Library tests
+
+
 ```
 
 ---

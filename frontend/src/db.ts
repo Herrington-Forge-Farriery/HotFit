@@ -1,4 +1,3 @@
-// File: frontend/src/db.ts
 // Polyfill IndexedDB API for tests
 import 'fake-indexeddb/auto';
 import Dexie, { Table } from 'dexie';

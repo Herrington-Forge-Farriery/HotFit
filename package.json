@@ -1,0 +1,27 @@
+{
+  "name": "hotfit-monorepo",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend",
+    "mobile"
+  ],
+  "version": "1.0.0",
+  "description": "This repository contains a **React + Vite** frontend and an **Express + SQLite/Prisma** backend for the HotFit mobile-first application. Use this README as your go-to setup guide for cloning, configuring, and running the project locally.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/herrington-farrier/HotFit.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/herrington-farrier/HotFit/issues"
+  },
+  "homepage": "https://github.com/herrington-farrier/HotFit#readme"
+}
